@@ -37,6 +37,8 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  flutter_svg: ^1.0.3
+  get: ^4.6.1
 
 dev_dependencies:
   flutter_test:
@@ -60,6 +62,9 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  assets:
+    - assets/images/
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
@@ -76,6 +81,34 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  fonts:
+    - family: NanumSquareRound
+      fonts:
+        - asset: assets/fonts/NanumSquareRoundOTFL.otf
+          weight: 300                
+        - asset: assets/fonts/NanumSquareRoundOTFR.otf
+          weight: 400                
+        - asset: assets/fonts/NanumSquareRoundOTFB.otf
+          weight: 700                
+        - asset: assets/fonts/NanumSquareRoundOTFEB.otf
+          weight: 800   
+
+    - family: DefaultFont
+      fonts:
+        - asset : assets/fonts/apple/AppleSDGothicNeoL.ttf
+          weight: 300 
+        - asset : assets/fonts/apple/AppleSDGothicNeoR.ttf
+          weight: 400 
+        - asset : assets/fonts/apple/AppleSDGothicNeoM.ttf
+          weight: 500 
+        - asset : assets/fonts/apple/AppleSDGothicNeoSB.ttf
+          weight: 600           
+        - asset : assets/fonts/apple/AppleSDGothicNeoB.ttf
+          weight: 700           
+        - asset : assets/fonts/apple/AppleSDGothicNeoEB.ttf
+          weight: 800 
+        - asset : assets/fonts/apple/AppleSDGothicNeoH.ttf
+          weight: 900 
   # fonts:
   #   - family: Schyler
   #     fonts:
