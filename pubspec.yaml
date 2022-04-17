@@ -39,6 +39,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_svg: ^1.0.3
   get: ^4.6.1
+  carousel_slider: ^4.0.0
 
 dev_dependencies:
   flutter_test:
@@ -64,6 +65,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/banner/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

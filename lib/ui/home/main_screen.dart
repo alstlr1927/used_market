@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'used_home.dart';
+import 'used_chat.dart';
+import 'used_profile.dart';
 
 class UsedMarketHome extends StatefulWidget {
   const UsedMarketHome({Key? key}) : super(key: key);
@@ -10,7 +13,7 @@ class UsedMarketHome extends StatefulWidget {
 }
 
 class _UsedMarketHomeState extends State<UsedMarketHome> {
-  List<Widget> _items = [Text1(), Text2(), Text3()];
+  List<Widget> _items = [Home(), Chat(), Profile()];
   int _selectedIdx = 0;
 
   void modifyIdx(idx) {
