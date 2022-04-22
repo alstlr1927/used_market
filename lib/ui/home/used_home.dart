@@ -34,12 +34,16 @@ class _HomeState extends State<Home> {
             CategoryArea(),
             // 배너 영역
             const BannerArea(),
+            SizedBox(
+              height: size.width * 0.1,
+            ),
             // 무료나눔 상품 영역
             FreePrdArea(),
             Container(
-              height: size.width * 0.02,
-              color: Colors.grey,
-            )
+              height: size.width * 0.06,
+            ),
+            // 인기 상품
+            BestPrdArea(),
           ],
         ),
       ),
@@ -155,7 +159,10 @@ class BannerArea extends StatelessWidget {
       child: CarouselSlider.builder(
           itemCount: bannerList.length,
           itemBuilder: (context, i, i2) {
-            return Image.asset(bannerList[i]);
+            return Image.asset(
+              bannerList[i],
+              fit: BoxFit.fill,
+            );
           },
           options: CarouselOptions(
             autoPlay: true,
@@ -174,20 +181,225 @@ class FreePrdArea extends StatefulWidget {
 }
 
 class _FreePrdAreaState extends State<FreePrdArea> {
+  final freeProductList = [
+    {'productNm': '쓰레기통', 'imgUrl': 'assets/product/trash.jpg'},
+    {'productNm': '샴푸', 'imgUrl': 'assets/product/shamp.png'},
+    {'productNm': '슬랙스', 'imgUrl': 'assets/product/pants.png'},
+    {'productNm': '조거팬츠', 'imgUrl': 'assets/product/jogger_pants.png'},
+    {'productNm': '의자', 'imgUrl': 'assets/product/chair.png'},
+    {'productNm': '담요', 'imgUrl': 'assets/product/blanket.png'},
+  ];
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            child: BodyTextBold(string: '무료 나눔', size: 16),
+            margin: EdgeInsets.only(
+                left: size.width * 0.02, bottom: size.width * 0.02),
+          ),
+          Container(
+            width: size.width,
+            height: size.width * 0.35,
+            margin: EdgeInsets.only(
+                left: size.width * 0.02, right: size.width * 0.02),
+            child: CustomScrollView(
+              scrollDirection: Axis.horizontal,
+              slivers: [
+                SliverList(
+                    delegate: SliverChildBuilderDelegate((context, idx) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(
+                            right: size.width * 0.04,
+                            bottom: size.width * 0.02),
+                        width: size.width * 0.25,
+                        height: size.width * 0.25,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                                image: Image.asset(freeProductList[idx]
+                                            ['imgUrl']
+                                        .toString())
+                                    .image)),
+                        // child: Image.asset(
+                        //   freeProductList[idx]['imgUrl'].toString(),
+                        //   fit: BoxFit.fill,
+                        // ),
+                      ),
+                      Container(
+                        child: BodyTextRegular(
+                          string: freeProductList[idx]['productNm'].toString(),
+                          size: 14,
+                        ),
+                      ),
+                    ],
+                  );
+                }, childCount: freeProductList.length)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class BestPrdArea extends StatefulWidget {
+  const BestPrdArea({Key? key}) : super(key: key);
+
+  @override
+  State<BestPrdArea> createState() => _BestPrdAreaState();
+}
+
+class _BestPrdAreaState extends State<BestPrdArea> {
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    var bestProductList = [
+      {
+        'productNm': '쓰레기통',
+        'imgUrl': 'assets/product/trash.jpg',
+        'price': '5000'
+      },
+      {
+        'productNm': '샴푸',
+        'imgUrl': 'assets/product/shamp.png',
+        'price': '17000'
+      },
+      {
+        'productNm': '슬랙스',
+        'imgUrl': 'assets/product/pants.png',
+        'price': '12000'
+      },
+      {
+        'productNm': '조거팬츠',
+        'imgUrl': 'assets/product/jogger_pants.png',
+        'price': '30000'
+      },
+      {
+        'productNm': '의자',
+        'imgUrl': 'assets/product/chair.png',
+        'price': '35000'
+      },
+      {
+        'productNm': '담요',
+        'imgUrl': 'assets/product/blanket.png',
+        'price': '21000'
+      },
+      {
+        'productNm': '에어팟',
+        'imgUrl': 'assets/product/airpod.jpg',
+        'price': '180000'
+      },
+      {
+        'productNm': '도넛',
+        'imgUrl': 'assets/product/doughnut.png',
+        'price': '8000'
+      },
+      {
+        'productNm': '맥북',
+        'imgUrl': 'assets/product/macbook.jpg',
+        'price': '1400000'
+      },
+    ];
+    var data = [];
+    var tempData = [];
+    for (var i = 0; i < bestProductList.length; i++) {
+      tempData.add(bestProductList[i]);
+      if (i % 3 == 2 || i == bestProductList.length - 1) {
+        // i == 2, 5, 8
+        data.add(tempData);
+        tempData = [];
+      }
+    }
+    return Container(
       width: size.width,
-      height: size.width * 0.5,
-      margin:
-          EdgeInsets.only(left: size.width * 0.02, right: size.width * 0.02),
-      child: CustomScrollView(
-        scrollDirection: Axis.horizontal,
-        slivers: [
-          SliverList(delegate: SliverChildBuilderDelegate((context, idx) {
-            return Container();
-          })),
+      height: size.width * 1.2,
+      //color: Colors.grey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            child: BodyTextBold(string: '인기 상품', size: 16),
+            margin: EdgeInsets.only(
+                left: size.width * 0.02, bottom: size.width * 0.02),
+          ),
+          CarouselSlider.builder(
+              itemCount: data.length,
+              itemBuilder: (context, i, i2) {
+                return ListView.builder(
+                    itemCount: data[i].length,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, idx) {
+                      return Container(
+                        margin: EdgeInsets.only(
+                            left: size.width * 0.04, bottom: size.width * 0.04),
+                        width: size.width,
+                        height: size.width * 0.3,
+                        child: Row(
+                          children: [
+                            Container(
+                              width: size.width * 0.3,
+                              height: size.width * 0.3,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: Image.asset(
+                                    data[i][idx]['imgUrl'].toString(),
+                                  ).image,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                margin:
+                                    EdgeInsets.only(left: size.width * 0.04),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      child: BodyTextBold(
+                                        string: data[i][idx]['productNm'],
+                                        size: 16,
+                                      ),
+                                    ),
+                                    Container(
+                                      child: Row(
+                                        children: [
+                                          BodyTextBold(
+                                              string: data[i][idx]['price'],
+                                              size: 16),
+                                          BodyTextRegular(string: '원', size: 16)
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    });
+              },
+              options: CarouselOptions(
+                  autoPlay: false,
+                  height: size.width,
+                  viewportFraction: 1.0,
+                  aspectRatio: 1 / 1)),
         ],
       ),
     );
