@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'used_home.dart';
 import 'used_chat.dart';
 import 'used_profile.dart';
+import '../constraints.dart';
 
 class UsedMarketHome extends StatefulWidget {
   const UsedMarketHome({Key? key}) : super(key: key);
@@ -24,9 +25,44 @@ class _UsedMarketHomeState extends State<UsedMarketHome> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(),
-      body: _items[_selectedIdx],
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: true,
+        foregroundColor: Colors.black,
+        backgroundColor: Colors.white,
+        title: BodyTextBold(string: '중고 마켓', size: 20),
+        actions: [
+          GestureDetector(
+            onTap: () {},
+            child: Container(
+              child: const Icon(Icons.search),
+              margin: EdgeInsets.only(right: size.width * 0.04),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {},
+            child: Container(
+              child: const Icon(Icons.notifications_active_outlined),
+              margin: const EdgeInsets.only(right: 16),
+            ),
+          )
+        ],
+      ),
+      body: Container(
+        child: _items[_selectedIdx],
+        color: Colors.white,
+      ),
+      floatingActionButton: Container(
+        child: _selectedIdx == 0
+            ? FloatingActionButton(
+                onPressed: () {},
+                backgroundColor: Colors.blue,
+                child: const Icon(Icons.add),
+              )
+            : null,
+      ),
       bottomNavigationBar: GNB(selectedIdx: _selectedIdx, modifyIdx: modifyIdx),
     );
   }
@@ -86,39 +122,6 @@ class _GNBState extends State<GNB> {
           icon: Icon(Icons.person),
         ),
       ],
-    );
-  }
-}
-
-class Text1 extends StatelessWidget {
-  const Text1({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: const Text('Text1'),
-    );
-  }
-}
-
-class Text2 extends StatelessWidget {
-  const Text2({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: const Text('Text2'),
-    );
-  }
-}
-
-class Text3 extends StatelessWidget {
-  const Text3({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: const Text('Text3'),
     );
   }
 }
