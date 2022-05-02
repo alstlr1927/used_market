@@ -34,26 +34,38 @@ class _HomeState extends State<Home> {
             CategoryArea(),
             // 배너 영역
             const BannerArea(),
-            SizedBox(
-              height: size.width * 0.1,
+            Container(
+              margin: EdgeInsets.only(
+                  top: size.width * 0.05, bottom: size.width * 0.05),
+              //color: Colors.black.withOpacity(0.1),
+              height: size.width * 0.01,
             ),
             // 무료나눔 상품 영역
             FreePrdArea(),
             Container(
-              height: size.width * 0.06,
+              margin: EdgeInsets.only(
+                  top: size.width * 0.05, bottom: size.width * 0.01),
+              color: Colors.black.withOpacity(0.05),
+              height: size.width * 0.01,
             ),
             // 인기 상품
             BestPrdArea(),
             Container(
-              height: size.width * 0.06,
+              margin: EdgeInsets.only(
+                  top: size.width * 0.05, bottom: size.width * 0.06),
+              color: Colors.black.withOpacity(0.05),
+              height: size.width * 0.01,
             ),
             // 인기 검색어
             SearchWordArea(),
             Container(
-              height: size.width * 0.06,
+              margin: EdgeInsets.only(
+                  top: size.width * 0.08, bottom: size.width * 0.06),
+              color: Colors.black.withOpacity(0.05),
+              height: size.width * 0.01,
             ),
             // 최신 상품
-            //RecentlyPrdArea()
+            RecentlyPrdArea()
           ],
         ),
       ),
@@ -133,10 +145,10 @@ class CategoryArea extends StatelessWidget {
               delegate: SliverChildBuilderDelegate((context, idx) {
             return Container(
               margin: EdgeInsets.only(right: size.width * 0.03),
-              child: BodyTextRegular(
+              child: BodyTextBold(
                 string: categoryList[idx],
-                size: 14,
-                color: const Color(0xff000000).withOpacity(0.6),
+                size: 16,
+                color: const Color(0xff000000).withOpacity(0.68),
               ),
             );
           }, childCount: categoryList.length))
@@ -205,7 +217,10 @@ class _FreePrdAreaState extends State<FreePrdArea> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            child: BodyTextBold(string: '무료 나눔', size: 16),
+            child: BodyTextBold(
+              string: '무료 나눔',
+              size: 18,
+            ),
             margin: EdgeInsets.only(left: 16, bottom: size.width * 0.04),
           ),
           Container(
@@ -234,9 +249,10 @@ class _FreePrdAreaState extends State<FreePrdArea> {
                                         .toString())
                                     .image)),
                       ),
-                      BodyTextRegular(
+                      BodyTextBold(
                         string: freeProductList[idx]['productNm'].toString(),
                         size: 14,
+                        color: const Color(0xff000000).withOpacity(0.68),
                       ),
                     ],
                   );
@@ -319,7 +335,7 @@ class _BestPrdAreaState extends State<BestPrdArea> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            child: BodyTextBold(string: '인기 상품', size: 16),
+            child: BodyTextBold(string: '인기 상품', size: 18),
             margin: EdgeInsets.only(left: 16, bottom: size.width * 0.02),
           ),
           CarouselSlider.builder(
@@ -510,54 +526,72 @@ class _RecentlyPrdAreaState extends State<RecentlyPrdArea> {
     return Container(
       margin: const EdgeInsets.only(left: 16, right: 16),
       child: Column(
-        children: [
-          CustomScrollView(
-            scrollDirection: Axis.vertical,
-            slivers: [
-              SliverToBoxAdapter(
-                child: Container(
-                  margin: EdgeInsets.only(bottom: size.width * 0.02),
-                  child: BodyTextBold(
-                    string: '최신 상품',
-                    size: 16,
-                  ),
-                ),
-              ),
-              SliverGrid(
-                  delegate: SliverChildBuilderDelegate((context, idx) {
-                    return RecentlyPrdItem(
-                        recentlyPrdItem: bestProductList[idx]);
-                  }, childCount: bestProductList.length),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 116 / 184,
-                      mainAxisSpacing: 17,
-                      crossAxisSpacing: 9))
-            ],
-          ),
-        ],
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: customGrid(size),
       ),
     );
   }
-}
 
-class RecentlyPrdItem extends StatefulWidget {
-  RecentlyPrdItem({Key? key, required this.recentlyPrdItem}) : super(key: key);
-  Map recentlyPrdItem;
-
-  @override
-  State<RecentlyPrdItem> createState() => _RecentlyPrdItemState();
-}
-
-class _RecentlyPrdItemState extends State<RecentlyPrdItem> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.amber,
+  List<Widget> customGrid(Size size) {
+    List<Widget> gridview = [];
+    List<Widget> rowChildren = [];
+    Widget container = Container(
+      margin: EdgeInsets.only(bottom: size.width * 0.06),
       child: BodyTextBold(
-        string: widget.recentlyPrdItem['productNm'],
-        size: 14,
+        string: '최근 등록된 상품',
+        size: 18,
       ),
     );
+    gridview.add(container);
+    for (var i = 0; i < bestProductList.length; i++) {
+      Widget widget = Container(
+        margin: EdgeInsets.only(bottom: size.width * 0.04),
+        width: size.width * 0.43,
+        child: Material(
+          borderRadius: BorderRadius.circular(10),
+          elevation: 2,
+          child: Column(
+            children: [
+              Container(
+                width: size.width * 0.43,
+                height: size.width * 0.43,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                        image:
+                            Image.asset(bestProductList[i]['imgUrl'].toString())
+                                .image,
+                        fit: BoxFit.cover)),
+              ),
+              Container(
+                margin: EdgeInsets.only(
+                    top: size.width * 0.02, bottom: size.width * 0.01),
+                child: BodyTextRegular(
+                  string: bestProductList[i]['productNm'].toString(),
+                  size: 16,
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: size.width * 0.01),
+                child: BodyTextRegular(
+                    string: '${bestProductList[i]['price']}원', size: 16),
+              )
+            ],
+          ),
+        ),
+      );
+
+      rowChildren.add(widget);
+
+      if (i % 2 == 1 || i == bestProductList.length - 1) {
+        Widget row = Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: rowChildren,
+        );
+        gridview.add(row);
+        rowChildren = [];
+      }
+    }
+    return gridview;
   }
 }

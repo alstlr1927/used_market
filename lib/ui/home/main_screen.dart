@@ -5,6 +5,7 @@ import 'used_home.dart';
 import 'used_chat.dart';
 import 'used_profile.dart';
 import '../constraints.dart';
+import '../regist/prd_regist.dart';
 
 class UsedMarketHome extends StatefulWidget {
   const UsedMarketHome({Key? key}) : super(key: key);
@@ -28,7 +29,7 @@ class _UsedMarketHomeState extends State<UsedMarketHome> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
+        elevation: 1,
         centerTitle: true,
         foregroundColor: Colors.black,
         backgroundColor: Colors.white,
@@ -57,7 +58,9 @@ class _UsedMarketHomeState extends State<UsedMarketHome> {
       floatingActionButton: Container(
         child: _selectedIdx == 0
             ? FloatingActionButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(RegistProduct());
+                },
                 backgroundColor: Colors.blue,
                 child: const Icon(Icons.add),
               )
