@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:used_market/ui/home/test.dart';
+import 'package:used_market/ui/product/detail/product_detail.dart';
 import 'used_home.dart';
 import 'used_chat.dart';
 import 'used_profile.dart';
 import '../constraints.dart';
-import '../regist/prd_regist.dart';
+import '../product/regist/prd_regist.dart';
+
+final List<Widget> _items = [Home(), Chat(), Profile()];
 
 class UsedMarketHome extends StatefulWidget {
   const UsedMarketHome({Key? key}) : super(key: key);
@@ -16,13 +19,11 @@ class UsedMarketHome extends StatefulWidget {
 }
 
 class _UsedMarketHomeState extends State<UsedMarketHome> {
-  List<Widget> _items = [Home(), Chat(), Profile()];
   int _selectedIdx = 0;
+  PageController _pageController = PageController();
 
   void modifyIdx(idx) {
-    setState(() {
-      _selectedIdx = idx;
-    });
+    _pageController.jumpToPage(idx);
   }
 
   @override
@@ -32,13 +33,19 @@ class _UsedMarketHomeState extends State<UsedMarketHome> {
       appBar: AppBar(
         elevation: 1,
         centerTitle: true,
-        foregroundColor: Colors.black,
-        backgroundColor: Colors.white,
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.green,
         automaticallyImplyLeading: false,
-        title: BodyTextBold(string: '중고 마켓', size: 20),
+        title: Image.asset(
+          'assets/logo/char_white.png',
+          fit: BoxFit.cover,
+        ),
+        //title: BodyTextBold(string: '잔디 마켓', size: 20),
         actions: [
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Get.to(ProductDetail());
+            },
             child: Container(
               child: const Icon(Icons.search),
               margin: EdgeInsets.only(right: size.width * 0.04),
@@ -53,18 +60,24 @@ class _UsedMarketHomeState extends State<UsedMarketHome> {
           )
         ],
       ),
-      body: Container(
-        child: _items[_selectedIdx],
-        color: Colors.white,
+      body: PageView(
+        controller: _pageController,
+        children: _items,
+        onPageChanged: (idx) {
+          setState(() {
+            _selectedIdx = idx;
+          });
+        },
+        physics: const NeverScrollableScrollPhysics(),
       ),
       floatingActionButton: Container(
         child: _selectedIdx == 0
             ? FloatingActionButton(
                 onPressed: () {
-                  Get.to(RegistProduct());
+                  Get.offAll(RegistProduct());
                   //Get.to(App());
                 },
-                backgroundColor: Colors.blue,
+                backgroundColor: Colors.green,
                 child: const Icon(Icons.add),
               )
             : null,

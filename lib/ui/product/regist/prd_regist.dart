@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:used_market/ui/home/main_screen.dart';
 import 'prd_category.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -23,9 +24,10 @@ class _RegistProductState extends State<RegistProduct> {
   bool loadingFlag = false;
   bool registReadyFlag = false;
   bool _freeOrNot = false;
-  int imgCount = 0;
+
   List imgList = [];
   List<String> imgUrlList = [];
+
   String productNm = '';
   String categoryName = '';
   int price = 0;
@@ -34,7 +36,7 @@ class _RegistProductState extends State<RegistProduct> {
   String productDesc = '';
 
   bool _registValidation() {
-    if (imgCount == 0) {
+    if (imgList.isEmpty) {
       return false;
     }
     if (productNm.isEmpty) {
@@ -53,9 +55,8 @@ class _RegistProductState extends State<RegistProduct> {
     return true;
   }
 
-  void _modifyImgCount(images) {
+  void _modifyImgList(images) {
     setState(() {
-      imgCount = images.length;
       imgList = [...images];
     });
     _registValidation();
@@ -80,13 +81,19 @@ class _RegistProductState extends State<RegistProduct> {
       gestures: const [GestureType.onTap],
       child: Scaffold(
         appBar: AppBar(
-          foregroundColor: Colors.black,
-          backgroundColor: Colors.white,
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.green,
           elevation: 1,
           centerTitle: true,
           title: BodyTextBold(
             string: '상품 등록',
             size: 20,
+          ),
+          leading: GestureDetector(
+            onTap: () {
+              Get.off(UsedMarketHome());
+            },
+            child: const Icon(Icons.close),
           ),
           actions: [
             TextButton(
@@ -141,7 +148,7 @@ class _RegistProductState extends State<RegistProduct> {
                     height: size.width * 0.06,
                   ),
                   // 이미지 업로드 등록 영역
-                  ImgUpload(modifyImgCount: _modifyImgCount),
+                  ImgUpload(modifyImgList: _modifyImgList),
                   SizedBox(
                     height: size.width * 0.06,
                   ),
@@ -330,8 +337,8 @@ class _RegistProductState extends State<RegistProduct> {
 }
 
 class ImgUpload extends StatefulWidget {
-  ImgUpload({Key? key, required this.modifyImgCount}) : super(key: key);
-  var modifyImgCount;
+  ImgUpload({Key? key, required this.modifyImgList}) : super(key: key);
+  var modifyImgList;
   @override
   State<ImgUpload> createState() => _ImgUploadState();
 }
@@ -408,7 +415,7 @@ class _ImgUploadState extends State<ImgUpload> {
                       setState(() {
                         imgList.removeAt(idx);
                       });
-                      widget.modifyImgCount(imgList);
+                      widget.modifyImgList(imgList);
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -442,7 +449,7 @@ class _ImgUploadState extends State<ImgUpload> {
     setState(() {
       imgList.add(imageFile);
     });
-    widget.modifyImgCount(imgList);
+    widget.modifyImgList(imgList);
   }
 
   void alertDialog(context) {
