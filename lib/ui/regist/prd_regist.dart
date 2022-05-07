@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -7,6 +8,7 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'prd_category.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class RegistProduct extends StatefulWidget {
   const RegistProduct({Key? key}) : super(key: key);
@@ -16,13 +18,60 @@ class RegistProduct extends StatefulWidget {
 }
 
 class _RegistProductState extends State<RegistProduct> {
+  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  bool loadingFlag = false;
+  bool registReadyFlag = false;
   bool _freeOrNot = false;
+  int imgCount = 0;
+  List imgList = [];
+  List<String> imgUrlList = [];
   String productNm = '';
-  String categoryCode = '';
+  String categoryName = '';
   int price = 0;
   String prdStatusCode = '';
   List tag = [];
   String productDesc = '';
+
+  bool _registValidation() {
+    if (imgCount == 0) {
+      return false;
+    }
+    if (productNm.isEmpty) {
+      return false;
+    }
+    if (categoryName.isEmpty) {
+      return false;
+    }
+    if (_freeOrNot == false && price == 0) {
+      return false;
+    }
+    // 연관태그
+    if (productDesc.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
+  void _modifyImgCount(images) {
+    setState(() {
+      imgCount = images.length;
+      imgList = [...images];
+    });
+    _registValidation();
+  }
+
+  _uploadStorage() async {
+    for (var item in imgList) {
+      late Reference reference;
+      reference = _firebaseStorage.ref().child(
+          'product/ZgoVsDFUYVcv2IdZQcRWKvnr9122/${DateTime.now().millisecondsSinceEpoch}');
+      var uploadTask = reference.putFile(item);
+      await uploadTask.whenComplete(() => null);
+      var downloadUrl = await reference.getDownloadURL();
+      imgUrlList.add(downloadUrl);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,11 +90,42 @@ class _RegistProductState extends State<RegistProduct> {
           ),
           actions: [
             TextButton(
-                onPressed: null,
+                onPressed: registReadyFlag
+                    ? () async {
+                        setState(() {
+                          loadingFlag = true;
+                        });
+                        await _uploadStorage();
+                        print('list : ${imgUrlList}');
+                        Map<String, dynamic> data = {
+                          'images': imgUrlList,
+                          'name': productNm,
+                          'category': categoryName,
+                          'price': price,
+                          'tag': [],
+                          'desc': productDesc,
+                          'regdate': Timestamp.now(),
+                          'revisiondate': Timestamp.now(),
+                          'selleruid': 'ZgoVsDFUYVcv2IdZQcRWKvnr9122'
+                        };
+                        _firebaseFirestore
+                            .collection('products')
+                            .doc()
+                            .set(data)
+                            .then((val) {
+                          setState(() {
+                            loadingFlag = false;
+                          });
+                          Get.back();
+                        });
+                      }
+                    : null,
                 child: BodyTextBold(
                   string: '등록',
                   size: 16,
-                  color: Colors.black.withOpacity(0.4),
+                  color: registReadyFlag
+                      ? Colors.black
+                      : Colors.black.withOpacity(0.4),
                 ))
           ],
         ),
@@ -53,119 +133,194 @@ class _RegistProductState extends State<RegistProduct> {
           color: Colors.white,
           width: size.width,
           margin: const EdgeInsets.only(right: 16, left: 16),
-          child: Column(
+          child: Stack(
             children: [
-              SizedBox(
-                height: size.width * 0.06,
-              ),
-              // 이미지 업로드 등록 영역
-              ImgUpload(),
-              SizedBox(
-                height: size.width * 0.06,
-              ),
-              // 상품명 영역
-              TextField(
-                onChanged: (val) {
-                  setState(() {
-                    productNm = val;
-                  });
-                },
-                decoration: const InputDecoration(
-                  hintText: '상품명',
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                    top: size.width * 0.04, bottom: size.width * 0.06),
-                height: 1,
-                color: Colors.black.withOpacity(0.1),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Get.to(ProductCategoryList());
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    BodyTextBold(
-                      string: '카테고리',
-                      size: 16,
-                      color: Colors.black.withOpacity(0.6),
-                    ),
-                    Icon(
-                      Icons.navigate_next,
-                      color: Colors.black.withOpacity(0.3),
-                    )
-                  ],
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                    top: size.width * 0.06, bottom: size.width * 0.04),
-                height: 1,
-                color: Colors.black.withOpacity(0.1),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
                 children: [
+                  SizedBox(
+                    height: size.width * 0.06,
+                  ),
+                  // 이미지 업로드 등록 영역
+                  ImgUpload(modifyImgCount: _modifyImgCount),
+                  SizedBox(
+                    height: size.width * 0.06,
+                  ),
+                  // 상품명 영역
+                  TextField(
+                    onChanged: (val) {
+                      setState(() {
+                        productNm = val;
+                        registReadyFlag = _registValidation();
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      hintText: '상품명',
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                    ),
+                  ),
                   Container(
-                    width: size.width / 2,
-                    child: _freeOrNot
-                        ? BodyTextBold(
-                            string: '무료나눔',
+                    margin: EdgeInsets.only(
+                        top: size.width * 0.04, bottom: size.width * 0.06),
+                    height: 1,
+                    color: Colors.black.withOpacity(0.1),
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      String? result = await Get.to(ProductCategoryList());
+                      if (result != null) {
+                        setState(() {
+                          categoryName = result;
+                          registReadyFlag = _registValidation();
+                        });
+                      }
+                    },
+                    child: Container(
+                      color: Colors.transparent,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          BodyTextBold(
+                            string:
+                                categoryName.isEmpty ? '카테고리' : categoryName,
                             size: 16,
-                            color: Colors.black.withOpacity(0.7),
-                          )
-                        : TextField(
-                            onChanged: (val) {
-                              setState(() {
-                                price = int.parse(val);
-                              });
-                            },
-                            keyboardType: TextInputType.number,
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            decoration: const InputDecoration(
-                              hintText: '판매가격',
-                              enabledBorder: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                            ),
+                            color: Colors.black.withOpacity(0.6),
                           ),
+                          Icon(
+                            Icons.navigate_next,
+                            color: Colors.black.withOpacity(0.3),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: size.width * 0.06, bottom: size.width * 0.04),
+                    height: 1,
+                    color: Colors.black.withOpacity(0.1),
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      BodyTextRegular(
-                        string: '무료나눔',
-                        size: 12,
-                        color: _freeOrNot
-                            ? Colors.black.withOpacity(0.7)
-                            : Colors.black.withOpacity(0.4),
+                      SizedBox(
+                        width: size.width / 2,
+                        child: _freeOrNot
+                            ? BodyTextBold(
+                                string: '무료나눔',
+                                size: 16,
+                                color: Colors.black.withOpacity(0.7),
+                              )
+                            : TextField(
+                                onChanged: (val) {
+                                  String value = '';
+                                  if (val == '') {
+                                    value = '0';
+                                  } else {
+                                    value = val;
+                                  }
+                                  setState(() {
+                                    price = int.parse(value);
+                                    registReadyFlag = _registValidation();
+                                  });
+                                },
+                                keyboardType: TextInputType.number,
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                                decoration: const InputDecoration(
+                                  hintText: '판매가격',
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                ),
+                              ),
                       ),
-                      Switch(
-                          value: _freeOrNot,
-                          onChanged: (val) {
-                            setState(() {
-                              _freeOrNot = val;
-                              if (val) {
+                      Row(
+                        children: [
+                          BodyTextRegular(
+                            string: '무료나눔',
+                            size: 12,
+                            color: _freeOrNot
+                                ? Colors.black.withOpacity(0.7)
+                                : Colors.black.withOpacity(0.4),
+                          ),
+                          Switch(
+                              value: _freeOrNot,
+                              onChanged: (val) {
                                 setState(() {
                                   _freeOrNot = val;
+                                  price = 0;
+                                  registReadyFlag = _registValidation();
                                 });
-                              }
-                            });
-                          }),
+                              }),
+                        ],
+                      )
                     ],
-                  )
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: size.width * 0.04, bottom: size.width * 0.06),
+                    height: 1,
+                    color: Colors.black.withOpacity(0.1),
+                  ),
+                  // 연관태그
+                  GestureDetector(
+                    onTap: () {
+                      // 모달로 할지 페이지로 할지 정하고 ㄱ
+                    },
+                    child: Container(
+                      color: Colors.transparent,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          BodyTextBold(
+                            string: '연관태그',
+                            size: 16,
+                            color: Colors.black.withOpacity(0.6),
+                          ),
+                          Icon(
+                            Icons.navigate_next,
+                            color: Colors.black.withOpacity(0.3),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: size.width * 0.06, bottom: size.width * 0.04),
+                    height: 1,
+                    color: Colors.black.withOpacity(0.1),
+                  ),
+                  // 상품설명
+                  TextField(
+                    onChanged: (val) {
+                      setState(() {
+                        productDesc = val;
+                        registReadyFlag = _registValidation();
+                      });
+                    },
+                    maxLines: null,
+                    decoration: const InputDecoration(
+                      hintText: '상품 설명을 상세히 작성해주세요 :)',
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                    ),
+                  ),
                 ],
               ),
               Container(
-                margin: EdgeInsets.only(
-                    top: size.width * 0.04, bottom: size.width * 0.04),
-                height: 1,
-                color: Colors.black.withOpacity(0.1),
-              ),
+                child: loadingFlag
+                    ? Container(
+                        color: Colors.transparent,
+                        width: size.width,
+                        height: size.height,
+                        child: Center(
+                          child: SpinKitFadingCube(color: Colors.pink[200]),
+                        ),
+                      )
+                    : null,
+              )
             ],
           ),
         ),
@@ -175,15 +330,14 @@ class _RegistProductState extends State<RegistProduct> {
 }
 
 class ImgUpload extends StatefulWidget {
-  const ImgUpload({Key? key}) : super(key: key);
-
+  ImgUpload({Key? key, required this.modifyImgCount}) : super(key: key);
+  var modifyImgCount;
   @override
   State<ImgUpload> createState() => _ImgUploadState();
 }
 
 class _ImgUploadState extends State<ImgUpload> {
   List imgList = [];
-  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -254,6 +408,7 @@ class _ImgUploadState extends State<ImgUpload> {
                       setState(() {
                         imgList.removeAt(idx);
                       });
+                      widget.modifyImgCount(imgList);
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -287,27 +442,7 @@ class _ImgUploadState extends State<ImgUpload> {
     setState(() {
       imgList.add(imageFile);
     });
-    // late Reference reference;
-
-    // if (source == ImageSource.gallery) {
-    //   reference = _firebaseStorage
-    //       .ref()
-    //       .child('Product/${DateTime.now().millisecondsSinceEpoch}');
-    // } else if (source == ImageSource.camera) {
-    //   reference = _firebaseStorage
-    //       .ref()
-    //       .child('Product/${DateTime.now().millisecondsSinceEpoch}_direct_');
-    // }
-
-    // final uploadTask = reference.putFile(imageFile);
-
-    // await uploadTask.whenComplete(() => null);
-
-    // final downloadUrl = await reference.getDownloadURL();
-    // setState(() {
-    //   imgList.add(downloadUrl);
-    // });
-    // print('url : $downloadUrl');
+    widget.modifyImgCount(imgList);
   }
 
   void alertDialog(context) {

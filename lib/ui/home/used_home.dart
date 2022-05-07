@@ -137,7 +137,7 @@ class CategoryArea extends StatelessWidget {
     return Container(
       width: size.width,
       height: size.width * 0.1,
-      margin: EdgeInsets.only(left: 16, right: 16, top: size.width * 0.02),
+      margin: EdgeInsets.only(top: size.width * 0.02),
       child: CustomScrollView(
         scrollDirection: Axis.horizontal,
         slivers: [

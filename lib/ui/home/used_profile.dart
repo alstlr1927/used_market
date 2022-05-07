@@ -1,9 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+
+import 'package:used_market/ui/login/select_login.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -30,67 +33,13 @@ class _ProfileState extends State<Profile> {
       child: Column(
         children: [
           TextButton(
-              onPressed: () => _uploadImageToStorage(ImageSource.gallery),
-              child: const Text('Gallery')),
-          TextButton(
-              onPressed: () => _uploadImageToStorage(ImageSource.camera),
-              child: const Text('Camera')),
-          Container(
-            height: 120,
-            margin: EdgeInsets.only(top: size.width * 0.06),
-            child: CustomScrollView(
-              scrollDirection: Axis.horizontal,
-              slivers: [
-                SliverList(
-                    delegate: SliverChildBuilderDelegate((context, idx) {
-                  return Container(
-                    margin: EdgeInsets.only(right: size.width * 0.02),
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      image: DecorationImage(
-                          image: Image.network(imageList[idx]).image,
-                          fit: BoxFit.fill),
-                    ),
-                  );
-                }, childCount: imageList.length))
-              ],
-            ),
-          ),
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+                Get.offAll(SelectLoginRoot());
+              },
+              child: const Text('log out')),
         ],
       ),
     );
-  }
-
-  void _uploadImageToStorage(ImageSource source) async {
-    var picker = ImagePicker();
-    var image = await picker.pickImage(source: source);
-
-    if (image == null) return;
-
-    var imageFile = File(image.path);
-
-    late Reference reference;
-
-    if (source == ImageSource.gallery) {
-      reference = _firebaseStorage
-          .ref()
-          .child('Product/${DateTime.now().millisecondsSinceEpoch}');
-    } else if (source == ImageSource.camera) {
-      reference = _firebaseStorage
-          .ref()
-          .child('Product/${DateTime.now().millisecondsSinceEpoch}_direct_');
-    }
-
-    final uploadTask = reference.putFile(imageFile);
-
-    await uploadTask.whenComplete(() => null);
-
-    final downloadUrl = await reference.getDownloadURL();
-    setState(() {
-      imageList.add(downloadUrl);
-    });
-    print('url : $downloadUrl');
   }
 }

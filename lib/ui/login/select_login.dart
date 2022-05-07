@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:used_market/ui/login/email_login.dart';
 import '../home/main_screen.dart';
 
 class SelectLoginRoot extends StatefulWidget {
@@ -25,6 +26,7 @@ class _SelectLoginRootState extends State<SelectLoginRoot> {
             padding: const EdgeInsets.fromLTRB(31, 10, 31, 10),
             child: GestureDetector(
               onTap: () async {
+                Navigator.pop(context);
                 Get.to(UsedMarketHome());
               },
               child: Container(
@@ -151,22 +153,27 @@ class _SelectLoginRootState extends State<SelectLoginRoot> {
                         offset: const Offset(3, 3),
                       )
                     ]),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: size.width * 0.12,
-                    ),
-                    Container(
-                      width: 55,
-                      child: SvgPicture.asset('assets/images/email.svg'),
-                    ),
-                    const Text(
-                      '다른 이메일로 로그인',
-                      style: TextStyle(
-                          fontSize: 18, fontFamily: 'AppleSDGothicNeoM'),
-                    )
-                  ],
+                child: GestureDetector(
+                  onTap: () {
+                    Get.to(EmailLogin());
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: size.width * 0.12,
+                      ),
+                      Container(
+                        width: 55,
+                        child: SvgPicture.asset('assets/images/email.svg'),
+                      ),
+                      const Text(
+                        '다른 이메일로 로그인',
+                        style: TextStyle(
+                            fontSize: 18, fontFamily: 'AppleSDGothicNeoM'),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),

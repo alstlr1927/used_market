@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:used_market/ui/home/test.dart';
 import 'used_home.dart';
 import 'used_chat.dart';
 import 'used_profile.dart';
@@ -33,6 +34,7 @@ class _UsedMarketHomeState extends State<UsedMarketHome> {
         centerTitle: true,
         foregroundColor: Colors.black,
         backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
         title: BodyTextBold(string: '중고 마켓', size: 20),
         actions: [
           GestureDetector(
@@ -60,6 +62,7 @@ class _UsedMarketHomeState extends State<UsedMarketHome> {
             ? FloatingActionButton(
                 onPressed: () {
                   Get.to(RegistProduct());
+                  //Get.to(App());
                 },
                 backgroundColor: Colors.blue,
                 child: const Icon(Icons.add),

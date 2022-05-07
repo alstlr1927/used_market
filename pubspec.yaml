@@ -44,6 +44,7 @@ dependencies:
   image_picker: ^0.8.5
   paginate_firestore: ^1.0.3+1
   keyboard_dismisser: ^2.0.1
+  flutter_spinkit: ^5.1.0
 
 dev_dependencies:
   flutter_test:

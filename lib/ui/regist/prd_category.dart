@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:used_market/ui/constraints.dart';
 
 class ProductCategoryList extends StatefulWidget {
@@ -44,17 +45,26 @@ class _ProductCategoryListState extends State<ProductCategoryList> {
         slivers: [
           SliverList(
               delegate: SliverChildBuilderDelegate((context, idx) {
-            return Container(
-              decoration: BoxDecoration(),
-              alignment: Alignment.centerLeft,
-              width: size.width,
-              height: size.width * 0.15,
+            return GestureDetector(
+              onTap: () {
+                Get.back(result: categoryList[idx]);
+              },
               child: Container(
-                margin: const EdgeInsets.only(left: 16),
-                child: BodyTextBold(
-                  string: categoryList[idx],
-                  size: 16,
-                  color: Colors.black.withOpacity(0.6),
+                decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    border: Border(
+                        bottom: BorderSide(
+                            color: Colors.black.withOpacity(0.1), width: 1))),
+                alignment: Alignment.centerLeft,
+                width: size.width,
+                height: size.width * 0.15,
+                child: Container(
+                  margin: const EdgeInsets.only(left: 16),
+                  child: BodyTextBold(
+                    string: categoryList[idx],
+                    size: 16,
+                    color: Colors.black.withOpacity(0.6),
+                  ),
                 ),
               ),
             );
