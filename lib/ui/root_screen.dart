@@ -60,7 +60,7 @@ class LoadingScreen extends StatelessWidget {
           width: 100,
           height: 100,
           child: Image.asset(
-            'assets/logo/symbol_char.png',
+            'assets/images/logo/symbol_char.png',
             width: 100,
             height: 100,
           ),

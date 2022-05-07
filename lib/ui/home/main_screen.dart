@@ -37,7 +37,7 @@ class _UsedMarketHomeState extends State<UsedMarketHome> {
         backgroundColor: Colors.green,
         automaticallyImplyLeading: false,
         title: Image.asset(
-          'assets/logo/char_white.png',
+          'assets/images/logo/char_white_horizontal.png',
           fit: BoxFit.cover,
         ),
         //title: BodyTextBold(string: '잔디 마켓', size: 20),
