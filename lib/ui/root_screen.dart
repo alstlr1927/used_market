@@ -56,14 +56,30 @@ class LoadingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: SizedBox(
-          width: 100,
-          height: 100,
-          child: Image.asset(
-            'assets/images/logo/symbol_char.png',
-            width: 100,
-            height: 100,
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              //color: Colors.amber,
+              width: 100,
+              height: 100,
+              child: Image.asset(
+                'assets/images/logo/symbol_2.png',
+                width: 100,
+                height: 100,
+              ),
+            ),
+            SizedBox(
+              //color: Colors.amber,
+              width: 200,
+              height: 100,
+              child: Image.asset(
+                'assets/images/logo/char_color_horizontal.png',
+                width: 200,
+                height: 100,
+              ),
+            ),
+          ],
         ),
       ),
     );

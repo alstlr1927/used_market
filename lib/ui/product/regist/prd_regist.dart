@@ -86,7 +86,7 @@ class _RegistProductState extends State<RegistProduct> {
           elevation: 1,
           centerTitle: true,
           title: BodyTextBold(
-            string: '상품 등록',
+            string: '상품 올리기',
             size: 20,
           ),
           leading: GestureDetector(
@@ -136,199 +136,201 @@ class _RegistProductState extends State<RegistProduct> {
                 ))
           ],
         ),
-        body: Container(
-          color: Colors.white,
-          width: size.width,
-          margin: const EdgeInsets.only(right: 16, left: 16),
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  SizedBox(
-                    height: size.width * 0.06,
-                  ),
-                  // 이미지 업로드 등록 영역
-                  ImgUpload(modifyImgList: _modifyImgList),
-                  SizedBox(
-                    height: size.width * 0.06,
-                  ),
-                  // 상품명 영역
-                  TextField(
-                    onChanged: (val) {
-                      setState(() {
-                        productNm = val;
-                        registReadyFlag = _registValidation();
-                      });
-                    },
-                    decoration: const InputDecoration(
-                      hintText: '상품명',
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
+        body: SingleChildScrollView(
+          child: Container(
+            color: Colors.white,
+            width: size.width,
+            margin: const EdgeInsets.only(right: 16, left: 16),
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    SizedBox(
+                      height: size.width * 0.06,
                     ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                        top: size.width * 0.04, bottom: size.width * 0.06),
-                    height: 1,
-                    color: Colors.black.withOpacity(0.1),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      String? result = await Get.to(ProductCategoryList());
-                      if (result != null) {
+                    // 이미지 업로드 등록 영역
+                    ImgUpload(modifyImgList: _modifyImgList),
+                    SizedBox(
+                      height: size.width * 0.06,
+                    ),
+                    // 상품명 영역
+                    TextField(
+                      onChanged: (val) {
                         setState(() {
-                          categoryName = result;
+                          productNm = val;
                           registReadyFlag = _registValidation();
                         });
-                      }
-                    },
-                    child: Container(
-                      color: Colors.transparent,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          BodyTextBold(
-                            string:
-                                categoryName.isEmpty ? '카테고리' : categoryName,
-                            size: 16,
-                            color: Colors.black.withOpacity(0.6),
-                          ),
-                          Icon(
-                            Icons.navigate_next,
-                            color: Colors.black.withOpacity(0.3),
-                          )
-                        ],
+                      },
+                      decoration: const InputDecoration(
+                        hintText: '상품명',
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
                       ),
                     ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                        top: size.width * 0.06, bottom: size.width * 0.04),
-                    height: 1,
-                    color: Colors.black.withOpacity(0.1),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: size.width / 2,
-                        child: _freeOrNot
-                            ? BodyTextBold(
-                                string: '무료나눔',
-                                size: 16,
-                                color: Colors.black.withOpacity(0.7),
-                              )
-                            : TextField(
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: size.width * 0.04, bottom: size.width * 0.06),
+                      height: 1,
+                      color: Colors.black.withOpacity(0.1),
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        String? result = await Get.to(ProductCategoryList());
+                        if (result != null) {
+                          setState(() {
+                            categoryName = result;
+                            registReadyFlag = _registValidation();
+                          });
+                        }
+                      },
+                      child: Container(
+                        color: Colors.transparent,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            BodyTextBold(
+                              string:
+                                  categoryName.isEmpty ? '카테고리' : categoryName,
+                              size: 16,
+                              color: Colors.black.withOpacity(0.6),
+                            ),
+                            Icon(
+                              Icons.navigate_next,
+                              color: Colors.black.withOpacity(0.3),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: size.width * 0.06, bottom: size.width * 0.04),
+                      height: 1,
+                      color: Colors.black.withOpacity(0.1),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: size.width / 2,
+                          child: _freeOrNot
+                              ? BodyTextBold(
+                                  string: '무료나눔',
+                                  size: 16,
+                                  color: Colors.black.withOpacity(0.7),
+                                )
+                              : TextField(
+                                  onChanged: (val) {
+                                    String value = '';
+                                    if (val == '') {
+                                      value = '0';
+                                    } else {
+                                      value = val;
+                                    }
+                                    setState(() {
+                                      price = int.parse(value);
+                                      registReadyFlag = _registValidation();
+                                    });
+                                  },
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: <TextInputFormatter>[
+                                    FilteringTextInputFormatter.digitsOnly
+                                  ],
+                                  decoration: const InputDecoration(
+                                    hintText: '판매가격',
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                  ),
+                                ),
+                        ),
+                        Row(
+                          children: [
+                            BodyTextRegular(
+                              string: '무료나눔',
+                              size: 12,
+                              color: _freeOrNot
+                                  ? Colors.black.withOpacity(0.7)
+                                  : Colors.black.withOpacity(0.4),
+                            ),
+                            Switch(
+                                value: _freeOrNot,
                                 onChanged: (val) {
-                                  String value = '';
-                                  if (val == '') {
-                                    value = '0';
-                                  } else {
-                                    value = val;
-                                  }
                                   setState(() {
-                                    price = int.parse(value);
+                                    _freeOrNot = val;
+                                    price = 0;
                                     registReadyFlag = _registValidation();
                                   });
-                                },
-                                keyboardType: TextInputType.number,
-                                inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.digitsOnly
-                                ],
-                                decoration: const InputDecoration(
-                                  hintText: '판매가격',
-                                  enabledBorder: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                ),
-                              ),
-                      ),
-                      Row(
-                        children: [
-                          BodyTextRegular(
-                            string: '무료나눔',
-                            size: 12,
-                            color: _freeOrNot
-                                ? Colors.black.withOpacity(0.7)
-                                : Colors.black.withOpacity(0.4),
-                          ),
-                          Switch(
-                              value: _freeOrNot,
-                              onChanged: (val) {
-                                setState(() {
-                                  _freeOrNot = val;
-                                  price = 0;
-                                  registReadyFlag = _registValidation();
-                                });
-                              }),
-                        ],
-                      )
-                    ],
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                        top: size.width * 0.04, bottom: size.width * 0.06),
-                    height: 1,
-                    color: Colors.black.withOpacity(0.1),
-                  ),
-                  // 연관태그
-                  GestureDetector(
-                    onTap: () {
-                      // 모달로 할지 페이지로 할지 정하고 ㄱ
-                    },
-                    child: Container(
-                      color: Colors.transparent,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          BodyTextBold(
-                            string: '연관태그',
-                            size: 16,
-                            color: Colors.black.withOpacity(0.6),
-                          ),
-                          Icon(
-                            Icons.navigate_next,
-                            color: Colors.black.withOpacity(0.3),
-                          )
-                        ],
-                      ),
+                                }),
+                          ],
+                        )
+                      ],
                     ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                        top: size.width * 0.06, bottom: size.width * 0.04),
-                    height: 1,
-                    color: Colors.black.withOpacity(0.1),
-                  ),
-                  // 상품설명
-                  TextField(
-                    onChanged: (val) {
-                      setState(() {
-                        productDesc = val;
-                        registReadyFlag = _registValidation();
-                      });
-                    },
-                    maxLines: null,
-                    decoration: const InputDecoration(
-                      hintText: '상품 설명을 상세히 작성해주세요 :)',
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: size.width * 0.04, bottom: size.width * 0.06),
+                      height: 1,
+                      color: Colors.black.withOpacity(0.1),
                     ),
-                  ),
-                ],
-              ),
-              Container(
-                child: loadingFlag
-                    ? Container(
+                    // 연관태그
+                    GestureDetector(
+                      onTap: () {
+                        // 모달로 할지 페이지로 할지 정하고 ㄱ
+                      },
+                      child: Container(
                         color: Colors.transparent,
-                        width: size.width,
-                        height: size.height,
-                        child: Center(
-                          child: SpinKitFadingCube(color: Colors.pink[200]),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            BodyTextBold(
+                              string: '연관태그',
+                              size: 16,
+                              color: Colors.black.withOpacity(0.6),
+                            ),
+                            Icon(
+                              Icons.navigate_next,
+                              color: Colors.black.withOpacity(0.3),
+                            )
+                          ],
                         ),
-                      )
-                    : null,
-              )
-            ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: size.width * 0.06, bottom: size.width * 0.04),
+                      height: 1,
+                      color: Colors.black.withOpacity(0.1),
+                    ),
+                    // 상품설명
+                    TextField(
+                      onChanged: (val) {
+                        setState(() {
+                          productDesc = val;
+                          registReadyFlag = _registValidation();
+                        });
+                      },
+                      maxLines: null,
+                      decoration: const InputDecoration(
+                        hintText: '상품 설명을 상세히 작성해주세요 :)',
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  child: loadingFlag
+                      ? Container(
+                          color: Colors.transparent,
+                          width: size.width,
+                          height: size.height,
+                          child: Center(
+                            child: SpinKitFadingCube(color: Colors.pink[200]),
+                          ),
+                        )
+                      : null,
+                )
+              ],
+            ),
           ),
         ),
       ),

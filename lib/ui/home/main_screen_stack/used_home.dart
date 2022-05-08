@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import '../constraints.dart';
+import 'package:used_market/ui/product/detail/product_detail.dart';
+import '../../constraints.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 class Home extends StatefulWidget {
@@ -12,61 +14,96 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return Container(
-      width: size.width,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          children: [
-            SizedBox(
-              height: size.width * 0.02,
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 1,
+        centerTitle: true,
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.green,
+        automaticallyImplyLeading: false,
+        title: Image.asset(
+          'assets/images/logo/char_white_horizontal.png',
+          width: size.width * 0.5,
+          height: size.width * 0.1,
+        ),
+        //title: BodyTextBold(string: '잔디 마켓', size: 20),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              //
+            },
+            child: Container(
+              child: const Icon(Icons.search),
+              margin: EdgeInsets.only(right: size.width * 0.04),
             ),
-            // 로고 && 검색, 알림 로고
-            //const HeaderArea(),
-            SizedBox(
-              height: size.width * 0.02,
+          ),
+          GestureDetector(
+            onTap: () {},
+            child: Container(
+              child: const Icon(Icons.notifications_active_outlined),
+              margin: const EdgeInsets.only(right: 16),
             ),
-            // 카테고리 영역
-            CategoryArea(),
-            // 배너 영역
-            const BannerArea(),
-            Container(
-              margin: EdgeInsets.only(
-                  top: size.width * 0.05, bottom: size.width * 0.05),
-              //color: Colors.black.withOpacity(0.1),
-              height: size.width * 0.01,
-            ),
-            // 무료나눔 상품 영역
-            FreePrdArea(),
-            Container(
-              margin: EdgeInsets.only(
-                  top: size.width * 0.05, bottom: size.width * 0.01),
-              color: Colors.black.withOpacity(0.05),
-              height: size.width * 0.01,
-            ),
-            // 인기 상품
-            BestPrdArea(),
-            Container(
-              margin: EdgeInsets.only(
-                  top: size.width * 0.05, bottom: size.width * 0.06),
-              color: Colors.black.withOpacity(0.05),
-              height: size.width * 0.01,
-            ),
-            // 인기 검색어
-            SearchWordArea(),
-            Container(
-              margin: EdgeInsets.only(
-                  top: size.width * 0.08, bottom: size.width * 0.06),
-              color: Colors.black.withOpacity(0.05),
-              height: size.width * 0.01,
-            ),
-            // 최신 상품
-            RecentlyPrdArea()
-          ],
+          )
+        ],
+      ),
+      body: Container(
+        width: size.width,
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              SizedBox(
+                height: size.width * 0.02,
+              ),
+              // 로고 && 검색, 알림 로고
+              //const HeaderArea(),
+              SizedBox(
+                height: size.width * 0.02,
+              ),
+              // 카테고리 영역
+              CategoryArea(),
+              // 배너 영역
+              const BannerArea(),
+              Container(
+                margin: EdgeInsets.only(
+                    top: size.width * 0.05, bottom: size.width * 0.05),
+                //color: Colors.black.withOpacity(0.1),
+                height: size.width * 0.01,
+              ),
+              // 무료나눔 상품 영역
+              FreePrdArea(),
+              Container(
+                margin: EdgeInsets.only(
+                    top: size.width * 0.05, bottom: size.width * 0.01),
+                color: Colors.black.withOpacity(0.05),
+                height: size.width * 0.01,
+              ),
+              // 인기 상품
+              BestPrdArea(),
+              Container(
+                margin: EdgeInsets.only(
+                    top: size.width * 0.05, bottom: size.width * 0.06),
+                color: Colors.black.withOpacity(0.05),
+                height: size.width * 0.01,
+              ),
+              // 인기 검색어
+              SearchWordArea(),
+              Container(
+                margin: EdgeInsets.only(
+                    top: size.width * 0.08, bottom: size.width * 0.06),
+                color: Colors.black.withOpacity(0.05),
+                height: size.width * 0.01,
+              ),
+              // 최신 상품
+              RecentlyPrdArea(scrollController: _scrollController)
+            ],
+          ),
         ),
       ),
     );
@@ -473,52 +510,76 @@ class _SearchWordAreaState extends State<SearchWordArea> {
 
 // 최신 상품 영역
 class RecentlyPrdArea extends StatefulWidget {
-  const RecentlyPrdArea({Key? key}) : super(key: key);
-
+  RecentlyPrdArea({Key? key, required this.scrollController}) : super(key: key);
+  ScrollController scrollController;
   @override
   State<RecentlyPrdArea> createState() => _RecentlyPrdAreaState();
 }
 
 class _RecentlyPrdAreaState extends State<RecentlyPrdArea> {
-  var bestProductList = [
-    {
-      'productNm': '쓰레기통',
-      'imgUrl': 'assets/product/trash.jpg',
-      'price': '5000'
-    },
-    {'productNm': '샴푸', 'imgUrl': 'assets/product/shamp.png', 'price': '17000'},
-    {
-      'productNm': '슬랙스',
-      'imgUrl': 'assets/product/pants.png',
-      'price': '12000'
-    },
-    {
-      'productNm': '조거팬츠',
-      'imgUrl': 'assets/product/jogger_pants.png',
-      'price': '30000'
-    },
-    {'productNm': '의자', 'imgUrl': 'assets/product/chair.png', 'price': '35000'},
-    {
-      'productNm': '담요',
-      'imgUrl': 'assets/product/blanket.png',
-      'price': '21000'
-    },
-    {
-      'productNm': '에어팟',
-      'imgUrl': 'assets/product/airpod.jpg',
-      'price': '180000'
-    },
-    {
-      'productNm': '도넛',
-      'imgUrl': 'assets/product/doughnut.png',
-      'price': '8000'
-    },
-    {
-      'productNm': '맥북',
-      'imgUrl': 'assets/product/macbook.jpg',
-      'price': '1400000'
-    },
-  ];
+  FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+
+  List<DocumentSnapshot> products = [];
+
+  bool isLoading = false;
+  bool hasMore = true;
+  int documentLimit = 10;
+  DocumentSnapshot? lastDocument = null;
+
+  @override
+  void initState() {
+    getProducts();
+    widget.scrollController.addListener(() {
+      double maxScroll = widget.scrollController.position.maxScrollExtent;
+      double currentScroll = widget.scrollController.position.pixels;
+      double delta = MediaQuery.of(context).size.height * 0.20;
+      print('max : $maxScroll');
+      print('cur : $currentScroll');
+      if (maxScroll - currentScroll <= delta) {
+        getProducts();
+      }
+    });
+    super.initState();
+  }
+
+  getProducts() async {
+    if (!hasMore) {
+      print('no more products');
+      return;
+    }
+    if (isLoading) {
+      return;
+    }
+    setState(() {
+      isLoading = true;
+    });
+    QuerySnapshot querySnapshot;
+    if (lastDocument == null) {
+      querySnapshot = await _firebaseFirestore
+          .collection('products')
+          .orderBy('regdate', descending: true)
+          .limit(documentLimit)
+          .get();
+    } else {
+      querySnapshot = await _firebaseFirestore
+          .collection('products')
+          .orderBy('regdate', descending: true)
+          .startAfterDocument(lastDocument!)
+          .limit(documentLimit)
+          .get();
+    }
+    if (querySnapshot.docs.length < documentLimit) {
+      hasMore = false;
+    }
+    lastDocument = querySnapshot.docs[querySnapshot.docs.length - 1];
+    products.addAll(querySnapshot.docs);
+    setState(() {
+      isLoading = false;
+    });
+    products.forEach((item) {
+      print(item.id);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -543,47 +604,45 @@ class _RecentlyPrdAreaState extends State<RecentlyPrdArea> {
       ),
     );
     gridview.add(container);
-    for (var i = 0; i < bestProductList.length; i++) {
-      Widget widget = Container(
-        margin: EdgeInsets.only(bottom: size.width * 0.04),
-        width: size.width * 0.43,
-        child: Material(
-          borderRadius: BorderRadius.circular(10),
-          elevation: 2,
-          child: Column(
-            children: [
-              Container(
-                width: size.width * 0.43,
-                height: size.width * 0.43,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    image: DecorationImage(
-                        image:
-                            Image.asset(bestProductList[i]['imgUrl'].toString())
-                                .image,
-                        fit: BoxFit.cover)),
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                    top: size.width * 0.02, bottom: size.width * 0.01),
-                child: BodyTextRegular(
-                  string: bestProductList[i]['productNm'].toString(),
-                  size: 16,
+    for (var i = 0; i < products.length; i++) {
+      Widget widget = GestureDetector(
+          onTap: () {
+            Get.to(ProductDetail(pid: products[i].id));
+          },
+          child: Container(
+            margin: EdgeInsets.only(bottom: size.width * 0.04),
+            width: size.width * 0.43,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: size.width * 0.43,
+                  height: size.width * 0.3,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      image: DecorationImage(
+                          image:
+                              Image.network(products[i].get('images')[0]).image,
+                          fit: BoxFit.cover)),
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: size.width * 0.01),
-                child: BodyTextRegular(
-                    string: '${bestProductList[i]['price']}원', size: 16),
-              )
-            ],
-          ),
-        ),
-      );
+                SizedBox(height: size.width * 0.02),
+                BodyTextRegular(
+                  string: products[i].get('name'),
+                  size: 14,
+                  maxLines: 1,
+                ),
+                BodyTextBold(
+                  string: '${products[i].get('price')}원',
+                  size: 14,
+                  maxLines: 1,
+                ),
+              ],
+            ),
+          ));
 
       rowChildren.add(widget);
 
-      if (i % 2 == 1 || i == bestProductList.length - 1) {
+      if (i % 2 == 1 || i == products.length - 1) {
         Widget row = Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: rowChildren,

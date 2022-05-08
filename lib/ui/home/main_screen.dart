@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:used_market/ui/home/test.dart';
-import 'package:used_market/ui/product/detail/product_detail.dart';
-import 'used_home.dart';
-import 'used_chat.dart';
-import 'used_profile.dart';
-import '../constraints.dart';
+import 'main_screen_stack/used_home.dart';
+import 'main_screen_stack/used_chat.dart';
+import 'main_screen_stack/used_profile.dart';
 import '../product/regist/prd_regist.dart';
 
 final List<Widget> _items = [Home(), Chat(), Profile()];
@@ -30,36 +26,6 @@ class _UsedMarketHomeState extends State<UsedMarketHome> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        elevation: 1,
-        centerTitle: true,
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.green,
-        automaticallyImplyLeading: false,
-        title: Image.asset(
-          'assets/images/logo/char_white_horizontal.png',
-          fit: BoxFit.cover,
-        ),
-        //title: BodyTextBold(string: '잔디 마켓', size: 20),
-        actions: [
-          GestureDetector(
-            onTap: () {
-              Get.to(ProductDetail());
-            },
-            child: Container(
-              child: const Icon(Icons.search),
-              margin: EdgeInsets.only(right: size.width * 0.04),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              child: const Icon(Icons.notifications_active_outlined),
-              margin: const EdgeInsets.only(right: 16),
-            ),
-          )
-        ],
-      ),
       body: PageView(
         controller: _pageController,
         children: _items,
@@ -117,8 +83,8 @@ class _GNBState extends State<GNB> {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       backgroundColor: Colors.white,
-      selectedItemColor: Colors.black,
-      unselectedItemColor: Colors.grey,
+      selectedItemColor: Colors.green,
+      unselectedItemColor: Colors.green[200],
       selectedFontSize: 14,
       unselectedFontSize: 14,
       currentIndex: widget.selectedIdx,

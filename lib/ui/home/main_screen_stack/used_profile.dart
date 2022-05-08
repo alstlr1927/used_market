@@ -26,19 +26,24 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Container(
-      margin: const EdgeInsets.only(right: 16, left: 16),
-      alignment: Alignment.center,
-      width: size.width,
-      child: Column(
-        children: [
-          TextButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-                Get.offAll(SelectLoginRoot());
-              },
-              child: const Text('log out')),
-        ],
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+      ),
+      body: Container(
+        margin: const EdgeInsets.only(right: 16, left: 16),
+        alignment: Alignment.center,
+        width: size.width,
+        child: Column(
+          children: [
+            TextButton(
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                  Get.offAll(SelectLoginRoot());
+                },
+                child: const Text('log out')),
+          ],
+        ),
       ),
     );
   }
