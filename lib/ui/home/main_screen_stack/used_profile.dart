@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -17,11 +18,9 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
-  List imageList = [
-    'https://firebasestorage.googleapis.com/v0/b/usedmarket-21905.appspot.com/o/Product%2F1651043930550?alt=media&token=c9de9bef-5a61-4542-b37c-f82ae8fac328',
-    'https://firebasestorage.googleapis.com/v0/b/usedmarket-21905.appspot.com/o/Product%2F1651043936602?alt=media&token=4e097862-2f8b-4994-8474-455127608fdc',
-    'https://firebasestorage.googleapis.com/v0/b/usedmarket-21905.appspot.com/o/Product%2F1651043941691?alt=media&token=d61cc6a4-7646-402c-b8d2-05ba81e9afe2'
-  ];
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  List<DocumentSnapshot> products = [];
+  List ids = [];
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +41,28 @@ class _ProfileState extends State<Profile> {
                   Get.offAll(SelectLoginRoot());
                 },
                 child: const Text('log out')),
+            TextButton(
+                onPressed: () async {
+                  QuerySnapshot querySnapshot =
+                      await _firebaseFirestore.collection('products').get();
+                  products.addAll(querySnapshot.docs);
+                  print(products.length);
+                  products.forEach((item) {
+                    ids.add(item.id);
+                  });
+                  print(ids);
+                },
+                child: const Text('get')),
+            TextButton(
+                onPressed: () {
+                  ids.forEach((item) async {
+                    await _firebaseFirestore
+                        .collection('products')
+                        .doc(item)
+                        .update({'view': 0});
+                  });
+                },
+                child: const Text('update')),
           ],
         ),
       ),

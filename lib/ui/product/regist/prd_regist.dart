@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:used_market/provider/used_market.dart';
 import 'package:used_market/ui/constraints.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -113,9 +114,11 @@ class _RegistProductState extends State<RegistProduct> {
                           'desc': productDesc,
                           'regdate': Timestamp.now(),
                           'revisiondate': Timestamp.now(),
-                          'selleruid': 'ZgoVsDFUYVcv2IdZQcRWKvnr9122'
+                          'selleruid': UsedMarket.getUid(),
+                          'view': 0,
+                          'enable': true,
                         };
-                        _firebaseFirestore
+                        await _firebaseFirestore
                             .collection('products')
                             .doc()
                             .set(data)
@@ -123,8 +126,8 @@ class _RegistProductState extends State<RegistProduct> {
                           setState(() {
                             loadingFlag = false;
                           });
-                          Get.back();
                         });
+                        Get.off(UsedMarketHome());
                       }
                     : null,
                 child: BodyTextBold(

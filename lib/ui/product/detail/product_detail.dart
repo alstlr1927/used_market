@@ -126,9 +126,13 @@ class _ProductDetailState extends State<ProductDetail> {
                       CarouselSlider.builder(
                           itemCount: prdData.get('images').length,
                           itemBuilder: (context, i, i2) {
-                            return Image.network(
-                              prdData.get('images')[i],
-                              fit: BoxFit.fill,
+                            return Container(
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: Image.network(
+                                              prdData.get('images')[i])
+                                          .image,
+                                      fit: BoxFit.fill)),
                             );
                           },
                           options: CarouselOptions(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:used_market/ui/product/detail/product_detail.dart';
+import 'package:used_market/ui/product/list/category_list.dart';
 import '../../constraints.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -180,12 +181,19 @@ class CategoryArea extends StatelessWidget {
         slivers: [
           SliverList(
               delegate: SliverChildBuilderDelegate((context, idx) {
-            return Container(
-              margin: EdgeInsets.only(right: size.width * 0.03),
-              child: BodyTextBold(
-                string: categoryList[idx],
-                size: 16,
-                color: const Color(0xff000000).withOpacity(0.68),
+            return GestureDetector(
+              onTap: () {
+                Get.to(CategoryProductList(
+                  categoryName: categoryList[idx],
+                ));
+              },
+              child: Container(
+                margin: EdgeInsets.only(right: size.width * 0.03),
+                child: BodyTextBold(
+                  string: categoryList[idx],
+                  size: 16,
+                  color: const Color(0xff000000).withOpacity(0.68),
+                ),
               ),
             );
           }, childCount: categoryList.length))
@@ -575,9 +583,6 @@ class _RecentlyPrdAreaState extends State<RecentlyPrdArea> {
     products.addAll(querySnapshot.docs);
     setState(() {
       isLoading = false;
-    });
-    products.forEach((item) {
-      print(item.id);
     });
   }
 
